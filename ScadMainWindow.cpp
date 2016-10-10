@@ -1,21 +1,35 @@
+#include "ScadMainWindow.h"
+
 #define GLEW_STATIC
 #include <GL/glew.h>
-
-#include <gtk/gtk.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
-#include <gdk/gdk.h>
 #include <iostream>
-#include <stdio.h>
-using namespace std;
+#include <cstdio>
 
-static gboolean
-render (GtkGLArea *area, GdkGLContext *context) {
-    // inside this function it's safe to use GL; the given
-    // #GdkGLContext has been made current to the drawable
-    // surface used by the #GtkGLArea and the viewport has
-    // already been set to be the size of the allocation
+using namespace Scad;
 
+void ScadMainWindow::build_main_area() {
+    box1.pack_start(main_area_box);
+
+    glarea.signal_render().connect(sigc::mem_fun(*this, &ScadMainWindow::on_render));
+
+    df.set_label("bt");
+    main_area_box.pack_start(df);
+    main_area_box.pack_start(glarea);
+}
+
+ScadMainWindow::ScadMainWindow() {
+    set_title("SCAD");
+    set_size_request(800, 600);
+    set_border_width(10);
+
+    build_main_area();
+    add(box1);
+    show_all_children();
+}
+
+bool ScadMainWindow::on_render(const Glib::RefPtr<Gdk::GLContext>& context) {
     glewExperimental = GL_TRUE;
     glewInit();
 
@@ -86,14 +100,9 @@ render (GtkGLArea *area, GdkGLContext *context) {
     glClear (GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    return TRUE;
+    return true;
 }
 
-int main(int argc, char* argv[]) {
-    MainWindow window;
-
-    window.build();
-    window.run();
-
-    return 0;
+ScadMainWindow::~ScadMainWindow() {
+    /* Empty */
 }
