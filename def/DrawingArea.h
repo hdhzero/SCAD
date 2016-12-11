@@ -1,6 +1,8 @@
 #ifndef DRAWING_AREA_H
 #define DRAWING_AREA_H
 
+#include <gtk/gtk.h>
+
 namespace Scad {
     class DrawingArea {
         private:
@@ -11,7 +13,10 @@ namespace Scad {
             GtkWidget* glarea;
 
         public:
-            void build();
+            DrawingArea();
+            ~DrawingArea();
+
+        public:
             GtkWidget* get_widget();
 
     };
